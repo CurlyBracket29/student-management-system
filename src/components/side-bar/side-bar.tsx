@@ -12,7 +12,7 @@ import {
   IconSwitchHorizontal,
 } from "@tabler/icons-react";
 
-import classes from "./NavbarMinimal.module.css";
+import styles from "./side-bar.module.css";
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -26,7 +26,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
         onClick={onClick}
-        className={classes.link}
+        className={styles.link}
         data-active={active || undefined}
       >
         <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
@@ -45,7 +45,7 @@ const mockdata = [
   { icon: IconSettings, label: "Settings" },
 ];
 
-export function NavbarMinimal() {
+export function SideBar() {
   const [active, setActive] = useState(2);
 
   const links = mockdata.map((link, index) => (
@@ -58,10 +58,10 @@ export function NavbarMinimal() {
   ));
 
   return (
-    <nav className={classes.navbar}>
+    <nav className={styles.navbar}>
       <Center></Center>
 
-      <div className={classes.navbarMain}>
+      <div className={styles.navbarMain}>
         <Stack justify="center" gap={0}>
           {links}
         </Stack>

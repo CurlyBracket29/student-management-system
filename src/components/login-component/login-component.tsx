@@ -16,23 +16,33 @@ import { GoogleButton } from "../google-btn/google-btn";
 import { PasswordStrength } from "../password-requirment-btn/password-requirement-btn";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/validation/auth.validation";
+import useSupabase from "../../hooks/use-supabase";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   toggle: () => void;
 };
 
 function LoginComponent({ toggle }: Props) {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
   });
+  const { supabase } = useSupabase();
 
-  const onSubmitHandeler = (data: any) => {
-    console.log(data, "login");
+  const onSubmitHandeler = async (formdata: any) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formdata.email,
+        password: formdata.password,
+      });
+      console.log(data, error);
+      navigate("/dashboard");
+    } catch (error) {}
   };
   return (
     <>

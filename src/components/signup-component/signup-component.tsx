@@ -14,12 +14,20 @@ import { Controller, useForm } from "react-hook-form";
 import { signUpSchema } from "../../utils/validation/auth.validation";
 import { GoogleButton } from "../google-btn/google-btn";
 import { PasswordStrength } from "../password-requirment-btn/password-requirement-btn";
+import useSupabase from "../../hooks/use-supabase";
 
 type Props = {
   toggle: () => void;
 };
-
+const defaultValues = {
+  acceptTNC: false,
+  email: "",
+  password: "",
+  username: "",
+};
 export default function SignupComponent({ toggle }: Props) {
+  const { supabase } = useSupabase();
+
   const {
     control,
     register,
@@ -28,10 +36,20 @@ export default function SignupComponent({ toggle }: Props) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(signUpSchema),
+    defaultValues,
   });
 
-  const onSubmitHandeler = (data: any) => {
-    console.log(data, "login");
+  const onSubmitHandeler = async (formData: any) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+      console.log(data);
+      console.log(error);
+    } catch (error) {
+      throw error;
+    }
   };
   return (
     <>
@@ -42,10 +60,13 @@ export default function SignupComponent({ toggle }: Props) {
       <Divider label="Or continue with email" labelPosition="center" my="lg" />
 
       <form
-        onSubmit={handleSubmit(onSubmitHandeler, (data: any) => {
-          // this is error handler
-          console.log(data);
-        })}
+        onSubmit={handleSubmit(
+          (data) => onSubmitHandeler(data),
+          (data: any) => {
+            // this is error handler
+            console.log(data);
+          }
+        )}
       >
         <Stack>
           <TextInput
