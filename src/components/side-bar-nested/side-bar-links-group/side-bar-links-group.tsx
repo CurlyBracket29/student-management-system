@@ -10,12 +10,16 @@ import {
 import { IconChevronRight } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./side-bar-links-group.module.css";
+import { useNavigate } from "react-router-dom";
 
 interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
   initiallyOpened?: boolean;
   links?: { label: string; link: string }[];
+  activeTab?: string;
+
+  setOpenIndex: () => void;
 }
 
 export function SideBarLinksGroup({
@@ -23,16 +27,25 @@ export function SideBarLinksGroup({
   label,
   initiallyOpened,
   links,
+  activeTab,
+  setOpenIndex,
 }: LinksGroupProps) {
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
+  const navigate = useNavigate();
   const items = (hasLinks ? links : []).map((link) => (
     <Text<"a">
       component="a"
-      className={classes.link}
-      href={link.link}
+      className={`${classes.link} ${
+        activeTab?.includes(link.link) ? "bg-neutral-900" : ""
+      }`}
+      href={""}
       key={link.label}
-      onClick={(event) => event.preventDefault()}
+      onClick={(event) => {
+        event.preventDefault();
+        setOpenIndex();
+        navigate(link.link);
+      }}
     >
       {link.label}
     </Text>

@@ -18,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../../utils/validation/auth.validation";
 import useSupabase from "../../hooks/use-supabase";
 import { useNavigate } from "react-router-dom";
+import { useUserData } from "../../hooks/use-user-data";
 
 type Props = {
   toggle: () => void;
@@ -25,6 +26,7 @@ type Props = {
 
 function LoginComponent({ toggle }: Props) {
   const navigate = useNavigate();
+  const { setUserData } = useUserData();
   const {
     register,
     handleSubmit,
@@ -40,7 +42,9 @@ function LoginComponent({ toggle }: Props) {
         email: formdata.email,
         password: formdata.password,
       });
-      console.log(data, error);
+      const { email, id }: any = data.user;
+      console.log(email, id);
+      setUserData({ email: email, id: id });
       navigate("/dashboard");
     } catch (error) {}
   };
